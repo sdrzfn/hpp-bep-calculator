@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator HPP & BEP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px 10px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        padding: 30px 20px;
+        text-align: center;
+        color: white;
+      }
+
+      .header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .content {
+        padding: 30px 20px;
+      }
+
+      .calculator-section {
+        margin-bottom: 30px;
+      }
+
+      .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e74c3c;
+        display: flex;
+        align-items: center;
+      }
+
+      .section-title::before {
+        content: "📊";
+        margin-right: 10px;
+        font-size: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-size: 14px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #e74c3c;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+      }
+
+      .calculate-btn {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 20px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .calculate-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(231, 76, 60, 0.3);
+      }
+
+      .calculate-btn:active {
+        transform: translateY(0);
+      }
+
+      .results {
+        margin-top: 30px;
+        padding: 25px;
+        background: linear-gradient(135deg, #74b9ff, #0984e3);
+        border-radius: 15px;
+        color: white;
+        display: none;
+      }
+
+      .results.show {
+        display: block;
+        animation: slideUp 0.5s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .result-item {
+        margin-bottom: 15px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+      }
+
+      .result-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .result-label {
+        font-size: 14px;
+        opacity: 0.9;
+        margin-bottom: 5px;
+      }
+
+      .result-value {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .info-box {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #856404;
+      }
+
+      .info-box h4 {
+        margin-bottom: 10px;
+        color: #b8860b;
+      }
+
+      .tabs {
+        display: flex;
+        margin-bottom: 20px;
+        background: #f1f2f6;
+        border-radius: 12px;
+        padding: 5px;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
+
+      .tab.active {
+        background: #e74c3c;
+        color: white;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Mobile Optimizations */
+      @media (max-width: 480px) {
+        body {
+          padding: 10px 5px;
+        }
+
+        .container {
+          margin: 0;
+          border-radius: 0;
+        }
+
+        .header {
+          padding: 25px 15px;
+        }
+
+        .header h1 {
+          font-size: 22px;
+        }
+
+        .content {
+          padding: 25px 15px;
+        }
+
+        .form-group input {
+          padding: 12px;
+          font-size: 16px; /* Prevents zoom on iOS */
+        }
+
+        .calculate-btn {
+          padding: 16px;
+          font-size: 15px;
+        }
+
+        .result-value {
+          font-size: 18px;
+        }
+
+        .tabs {
+          flex-direction: column;
+        }
+
+        .tab {
+          margin-bottom: 5px;
+        }
+
+        .tab:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      @media (max-width: 320px) {
+        .header h1 {
+          font-size: 20px;
+        }
+
+        .section-title {
+          font-size: 16px;
+        }
+
+        .form-group label {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>💰 Kalkulator HPP & BEP</h1>
+        <p>Hitung Harga Pokok Produksi dan Break Even Point dengan mudah</p>
+      </div>
+
+      <div class="content">
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('hpp')">HPP</div>
+          <div class="tab" onclick="switchTab('bep')">BEP</div>
+        </div>
+
+        <!-- HPP Calculator -->
+        <div id="hpp-content" class="tab-content active">
+          <div class="calculator-section">
+            <h2 class="section-title">Hitung HPP (Harga Pokok Produksi)</h2>
+
+            <div class="form-group">
+              <label for="bahan-baku">💵 Biaya Bahan Baku (Rp)</label>
+              <input
+                type="number"
+                id="bahan-baku"
+                placeholder="Contoh: 50000"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="tenaga-kerja">👷 Biaya Tenaga Kerja (Rp)</label>
+              <input
+                type="number"
+                id="tenaga-kerja"
+                placeholder="Contoh: 30000"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="overhead">🏭 Biaya Overhead (Rp)</label>
+              <input type="number" id="overhead" placeholder="Contoh: 20000" />
+            </div>
+
+            <div class="form-group">
+              <label for="jumlah-produk"
+                >📦 Jumlah Produk yang Dihasilkan</label
+              >
+              <input
+                type="number"
+                id="jumlah-produk"
+                placeholder="Contoh: 100"
+              />
+            </div>
+
+            <button class="calculate-btn" onclick="calculateHPP()">
+              🧮 Hitung HPP
+            </button>
+
+            <div id="hpp-results" class="results">
+              <div class="result-item">
+                <div class="result-label">HPP per Unit:</div>
+                <div class="result-value" id="hpp-value">Rp 0</div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">Total Biaya Produksi:</div>
+                <div class="result-value" id="total-cost">Rp 0</div>
+              </div>
+            </div>
+
+            <div class="info-box">
+              <h4>ℹ️ Tentang HPP:</h4>
+              <p>
+                HPP adalah total biaya yang dikeluarkan untuk memproduksi satu
+                unit barang. Rumus: (Biaya Bahan Baku + Biaya Tenaga Kerja +
+                Biaya Overhead) ÷ Jumlah Produk
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- BEP Calculator -->
+        <div id="bep-content" class="tab-content">
+          <div class="calculator-section">
+            <h2 class="section-title">Hitung BEP (Break Even Point)</h2>
+
+            <div class="form-group">
+              <label for="biaya-tetap">🏢 Biaya Tetap (Rp)</label>
+              <input
+                type="number"
+                id="biaya-tetap"
+                placeholder="Contoh: 1000000"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="harga-jual">💰 Harga Jual per Unit (Rp)</label>
+              <input
+                type="number"
+                id="harga-jual"
+                placeholder="Contoh: 15000"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="biaya-variabel"
+                >📊 Biaya Variabel per Unit (Rp)</label
+              >
+              <input
+                type="number"
+                id="biaya-variabel"
+                placeholder="Contoh: 10000"
+              />
+            </div>
+
+            <button class="calculate-btn" onclick="calculateBEP()">
+              📈 Hitung BEP
+            </button>
+
+            <div id="bep-results" class="results">
+              <div class="result-item">
+                <div class="result-label">BEP Unit:</div>
+                <div class="result-value" id="bep-unit">0 unit</div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">BEP Rupiah:</div>
+                <div class="result-value" id="bep-rupiah">Rp 0</div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">Margin Kontribusi:</div>
+                <div class="result-value" id="margin-kontribusi">Rp 0</div>
+              </div>
+            </div>
+
+            <div class="info-box">
+              <h4>ℹ️ Tentang BEP:</h4>
+              <p>
+                BEP adalah titik dimana total pendapatan sama dengan total biaya
+                (tidak untung, tidak rugi). Rumus BEP Unit: Biaya Tetap ÷ (Harga
+                Jual - Biaya Variabel)
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function switchTab(tab) {
+        // Hide all tab contents
+        document.querySelectorAll(".tab-content").forEach((content) => {
+          content.classList.remove("active");
+        });
+
+        // Remove active class from all tabs
+        document.querySelectorAll(".tab").forEach((t) => {
+          t.classList.remove("active");
+        });
+
+        // Show selected tab content
+        document.getElementById(tab + "-content").classList.add("active");
+
+        // Add active class to clicked tab
+        event.target.classList.add("active");
+
+        // Hide results when switching tabs
+        document.getElementById("hpp-results").classList.remove("show");
+        document.getElementById("bep-results").classList.remove("show");
+      }
+
+      function formatRupiah(number) {
+        return new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(number);
+      }
+
+      function formatNumber(number) {
+        return new Intl.NumberFormat("id-ID").format(number);
+      }
+
+      function calculateHPP() {
+        const bahanBaku = document.getElementById("bahan-baku").value;
+        const tenagaKerja = document.getElementById("tenaga-kerja").value;
+        const overhead = document.getElementById("overhead").value;
+        const jumlahProduk = document.getElementById("jumlah-produk").value;
+
+        // Validasi input kosong
+        if (!bahanBaku || bahanBaku.trim() === "") {
+          alert("⚠️ Biaya Bahan Baku harus diisi!");
+          document.getElementById("bahan-baku").focus();
+          return;
+        }
+        if (!tenagaKerja || tenagaKerja.trim() === "") {
+          alert("⚠️ Biaya Tenaga Kerja harus diisi!");
+          document.getElementById("tenaga-kerja").focus();
+          return;
+        }
+        if (!overhead || overhead.trim() === "") {
+          alert("⚠️ Biaya Overhead harus diisi!");
+          document.getElementById("overhead").focus();
+          return;
+        }
+        if (!jumlahProduk || jumlahProduk.trim() === "") {
+          alert("⚠️ Jumlah Produk harus diisi!");
+          document.getElementById("jumlah-produk").focus();
+          return;
+        }
+
+        const bahanBakuNum = parseFloat(bahanBaku);
+        const tenagaKerjaNum = parseFloat(tenagaKerja);
+        const overheadNum = parseFloat(overhead);
+        const jumlahProdukNum = parseFloat(jumlahProduk);
+
+        // Validasi input negatif atau nol
+        if (bahanBakuNum < 0) {
+          alert("⚠️ Biaya Bahan Baku tidak boleh negatif!");
+          document.getElementById("bahan-baku").focus();
+          return;
+        }
+        if (tenagaKerjaNum < 0) {
+          alert("⚠️ Biaya Tenaga Kerja tidak boleh negatif!");
+          document.getElementById("tenaga-kerja").focus();
+          return;
+        }
+        if (overheadNum < 0) {
+          alert("⚠️ Biaya Overhead tidak boleh negatif!");
+          document.getElementById("overhead").focus();
+          return;
+        }
+        if (jumlahProdukNum <= 0) {
+          alert("⚠️ Jumlah Produk harus lebih besar dari 0!");
+          document.getElementById("jumlah-produk").focus();
+          return;
+        }
+
+        const totalBiaya = bahanBakuNum + tenagaKerjaNum + overheadNum;
+        const hpp = totalBiaya / jumlahProdukNum;
+
+        document.getElementById("hpp-value").textContent = formatRupiah(hpp);
+        document.getElementById("total-cost").textContent =
+          formatRupiah(totalBiaya);
+
+        document.getElementById("hpp-results").classList.add("show");
+      }
+
+      function calculateBEP() {
+        const biayaTetap = document.getElementById("biaya-tetap").value;
+        const hargaJual = document.getElementById("harga-jual").value;
+        const biayaVariabel = document.getElementById("biaya-variabel").value;
+
+        // Validasi input kosong
+        if (!biayaTetap || biayaTetap.trim() === "") {
+          alert("⚠️ Biaya Tetap harus diisi!");
+          document.getElementById("biaya-tetap").focus();
+          return;
+        }
+        if (!hargaJual || hargaJual.trim() === "") {
+          alert("⚠️ Harga Jual per Unit harus diisi!");
+          document.getElementById("harga-jual").focus();
+          return;
+        }
+        if (!biayaVariabel || biayaVariabel.trim() === "") {
+          alert("⚠️ Biaya Variabel per Unit harus diisi!");
+          document.getElementById("biaya-variabel").focus();
+          return;
+        }
+
+        const biayaTetapNum = parseFloat(biayaTetap);
+        const hargaJualNum = parseFloat(hargaJual);
+        const biayaVariabelNum = parseFloat(biayaVariabel);
+
+        // Validasi input negatif
+        if (biayaTetapNum < 0) {
+          alert("⚠️ Biaya Tetap tidak boleh negatif!");
+          document.getElementById("biaya-tetap").focus();
+          return;
+        }
+        if (hargaJualNum <= 0) {
+          alert("⚠️ Harga Jual harus lebih besar dari 0!");
+          document.getElementById("harga-jual").focus();
+          return;
+        }
+        if (biayaVariabelNum < 0) {
+          alert("⚠️ Biaya Variabel tidak boleh negatif!");
+          document.getElementById("biaya-variabel").focus();
+          return;
+        }
+
+        // Validasi logika bisnis
+        if (hargaJualNum <= biayaVariabelNum) {
+          alert("⚠️ Harga jual harus lebih besar dari biaya variabel!");
+          document.getElementById("harga-jual").focus();
+          return;
+        }
+
+        const marginKontribusi = hargaJualNum - biayaVariabelNum;
+        const bepUnit = biayaTetapNum / marginKontribusi;
+        const bepRupiah = bepUnit * hargaJualNum;
+
+        document.getElementById("bep-unit").textContent =
+          formatNumber(Math.ceil(bepUnit)) + " unit";
+        document.getElementById("bep-rupiah").textContent =
+          formatRupiah(bepRupiah);
+        document.getElementById("margin-kontribusi").textContent =
+          formatRupiah(marginKontribusi);
+
+        document.getElementById("bep-results").classList.add("show");
+      }
+
+      // Auto format input numbers
+      document.querySelectorAll('input[type="number"]').forEach((input) => {
+        input.addEventListener("input", function (e) {
+          // Remove any non-digit characters except decimal point
+          let value = e.target.value.replace(/[^0-9.]/g, "");
+
+          // Ensure only one decimal point
+          const parts = value.split(".");
+          if (parts.length > 2) {
+            value = parts[0] + "." + parts.slice(1).join("");
+          }
+
+          e.target.value = value;
+        });
+      });
+
+      // Prevent form submission on Enter key
+      document.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const activeTab = document
+            .querySelector(".tab.active")
+            .textContent.toLowerCase();
+          if (activeTab === "hpp") {
+            calculateHPP();
+          } else {
+            calculateBEP();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
